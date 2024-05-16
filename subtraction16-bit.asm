@@ -13,10 +13,9 @@ code segment
         mov ax,[SI];
         lea SI , num2;
         mov bx , [SI];
-        add ax ,bx
+        sub ax ,bx
         lea SI, res;
         mov [SI],ax;
         hlt
         code ends
     end start
-    
