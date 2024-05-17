@@ -1,0 +1,31 @@
+DATA SEGMENT 
+    ARR DB 01H,02H,09H,08H,03H
+    DATA ENDS
+CODE SEGMENT 
+    ASSUME CS:CODE,DS:DATA
+    START:
+    MOV AX,DATA
+    MOV DS,AX
+    MOV CL,04H
+    FORI:
+    MOV CH,CL
+    LEA SI,ARR
+    FORJ:
+    MOV AL,[SI]
+    MOV BL,[SI+1]
+    CMP AL,BL
+    JNC NOSWAP
+    XCHG AL,BL
+    MOV [SI],AL
+    MOV [SI+1],BL
+    NOSWAP:
+    INC SI
+    DEC CH
+    JNZ FORJ
+    DEC CL
+    JNZ FORI
+    HLT
+    CODE ENDS
+END START
+
+    

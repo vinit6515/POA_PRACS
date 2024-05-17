@@ -1,0 +1,39 @@
+DATA SEGMENT 
+    ARR DB 01H,05H,08H,02H,03H 
+    MIN DB ?
+    MAX DB ?
+    DATA ENDS
+CODE SEGMENT
+    ASSUME CS:CODE,DS:DATA 
+    START:
+    MOV AX,DATA
+    MOV DS,AX
+    MOV CL,04H
+    FORI:
+    MOV CH,CL
+    LEA SI,ARR
+    FORJ:
+    MOV AL,[SI]
+    MOV BL,[SI+1]
+    CMP AL,BL
+    JC NOSWAP
+    XCHG AL,BL
+    MOV [SI],AL
+    MOV [SI+1],BL
+    NOSWAP:
+    INC SI
+    DEC CH
+    JNZ FORJ
+    DEC CL
+    JNZ FORI 
+    LEA SI,ARR
+    MOV AL,[SI]
+    MOV MIN,AL
+    ADD SI, 04H
+    MOV AL , [SI]
+    MOV MAX,AL
+    HLT
+    CODE ENDS   
+END START
+
+    
