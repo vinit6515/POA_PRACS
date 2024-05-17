@@ -1,0 +1,28 @@
+DATA SEGMENT
+    ARR DB 00H,01H,02H,03H,04H
+    SUM DB 00H
+    AVG DB ?
+    DATA ENDS
+CODE SEGMENT
+    ASSUME CS:CODE DS:DATA
+    START:
+    MOV AX,DATA
+    MOV DS,AX
+    LEA SI,ARR
+    MOV CL,05H
+    BACK:
+    MOV AL,[SI]
+    ADD SUM,AL 
+    INC SI
+    DEC CL
+    JNZ BACK 
+    MOV AX,0000H;
+    MOV AL , SUM 
+    MOV DL,05H
+    DIV DL
+    MOV AVG,AL 
+    HLT
+    
+    CODE ENDS
+end start
+    
