@@ -1,47 +1,57 @@
-def twosComplement(num):
-    onesComplement=""
-    for i in num:
-        if(i=="0"):
-            onesComplement+="1"
+def left_shift(accumulator, quotient):
+    return accumulator[1:] + quotient[0], quotient[1:] + "0"
+def right_shift(accumulator, quotient):
+    return "0" + accumulator[:-1], accumulator[-1] + quotient[:-1]
+def add_binary(x, y):
+    max_len = max(len(x), len(y))
+    x = x.zfill(max_len)
+    y = y.zfill(max_len)
+    result = ''
+    carry = 0
+    for i in range(max_len - 1, -1, -1):
+        r = carry
+        r += 1 if x[i] == '1' else 0
+        r += 1 if y[i] == '1' else 0
+        result = ('1' if r % 2 == 1 else '0') + result
+        carry = 0 if r < 2 else 1
+    if carry != 0:
+        result = '1' + result
+    return result.zfill(max_len)
+
+def complement(x):
+    return ''.join('1' if bit == '0' else '0' for bit in x)
+
+def restore_division(dividend, divisor):
+    if len(dividend) < len(divisor):
+        raise ValueError("Dividend must be greater than or equal to the divisor")
+
+    dividend = dividend.lstrip('0')  # Remove leading zeros
+    divisor = divisor.lstrip('0')  # Remove leading zeros
+    accumulator = "0" * len(divisor)
+    quotient = dividend[:len(divisor)]
+    steps = []
+
+    for i in range(len(dividend) - len(divisor) + 1):
+        if accumulator[0] == "1":
+            accumulator = add_binary(accumulator, divisor)
+            steps.append(f"Step {i}: Subtract and Shift: A: {accumulator}, Q: {quotient}, 1")
         else:
-            onesComplement-="0"
-        return bin(int(onesComplement,2)+int("1",2)).replace("0b","")
-binNum1=input("\nEnter the dividend(Q): ")
-binNum2 = input("\nEnter the divisor(M): ")
-maxlen=len(binNum1)
-binNum1=binNum1.zfill(maxlen)
-binNum2=binNum2.zfill(maxlen+1)
-binnum2Comp=twosComplement(binNum2)
-binnum2Comp=binnum2Comp.zfill(maxlen)
-count=maxlen
-m=binNum2
-minusm=binnum2Comp
-q=binNum1
-a="0"
-a=a.zfill(maxlen+1)
-leftShift=""
-while count>0:
-    merged=a+q
-    leftShift=merged[1:]
-    a=leftShift[:maxlen+1]
-    a=bin(int(a,2)+int(minusm,2)).replace("0b","")
+            accumulator = add_binary(accumulator, complement(divisor))
+            steps.append(f"Step {i}: Add and Shift: A: {accumulator}, Q: {quotient}, 0")
 
-    if len(a)> maxlen+1:
-        a=a[1:]
-    a=a.zfill(maxlen+1)
-    if a[0]=="0":
-        leftShift=a + q[1:]
-        leftShift+="1"
-    else:
-        a=bin(int(a,2)+int(m,2)).replace("0b","")
-        if len(a)>maxlen+1:
-            a=a[1:]
-        a=a.zfill(maxlen+1)
-        leftShift=a+q[1:]
-        leftShift+="0"
-    a=leftShift[:maxlen+1]
-    q=leftShift[maxlen+1:]
-    count=count-1
-print("Quotient: ",q)
-print("Accumulator: ",a)
+        accumulator, quotient = left_shift(accumulator, quotient)
 
+    return steps
+
+def main():
+    dividend = input("Enter the dividend (binary): ")
+    divisor = input("Enter the divisor (binary): ")
+
+    steps = restore_division(dividend, divisor)
+
+    print("\nRestoring Division Steps:")
+    for step in steps:
+        print(step)
+
+if __name__ == "__main__":
+    main()
