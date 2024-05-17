@@ -10,10 +10,10 @@ code segment
         mov ax,data;
         mov ds,ax;
         lea SI,num1;
-        mov ax,[SI];
+        mov al,num1;
         lea SI , num2;
-        mov bx , [SI];
-        add ax ,bx
+        mov bl , num2;
+        add al ,bl
         lea SI, res;
         mov [SI],ax;
         hlt
